@@ -1,44 +1,55 @@
-﻿using NUnit.Framework;
+﻿using EstudoDeTeste;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using EstudoDeTeste.Pages;
-using System;
+using EstudoDeTeste.Data;
 
 namespace EstudoDeTeste.Tests
 {
-    [TestFixture]
     public class LoginTests
     {
         private IWebDriver driver;
-        private LoginPage loginPage;
 
         [SetUp]
         public void SetUp()
         {
             driver = new ChromeDriver();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            driver.Navigate().GoToUrl("https://practice.expandtesting.com/login");
-            loginPage = new LoginPage(driver);
         }
 
         [Test]
         public void LoginComCredenciaisValidas_DeveExibirMensagemDeSucesso()
         {
-            loginPage.RealizarLogin("practice", "SuperSecretPassword!");
-            Assert.IsTrue(loginPage.MensagemDeSucessoVisivel());
+            // Acessa a página de login
+            driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/login");
+
+            // Realiza o login com usuário e senha válidos
+            var loginPage = new LoginPage(driver);
+            loginPage.RealizarLogin( DadosLogin.UsuarioValido, DadosLogin.SenhaValida);
+
+            // Verifica se a mensagem de sucesso apareceu após o login
+            Assert.IsTrue(loginPage.MensagemDeSucessoVisivel(), "Mensagem de sucesso não apareceu após o login.");
         }
 
         [Test]
         public void LoginComCredenciaisInvalidas_DeveExibirMensagemDeErro()
         {
-            loginPage.RealizarLogin("practice", "senhaErrada");
-            Assert.IsTrue(loginPage.MensagemDeErroVisivel());
+            // Acessa a página de login
+            driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/login");
+
+            // Realiza o login com usuário e senha válidos
+            var loginPage = new LoginPage(driver);
+            loginPage.RealizarLogin(DadosLogin.UsuarioInvalido, DadosLogin.SenhaInvalida);
+
+            // Verifica se a mensagem de sucesso não apareceu após o login
+            Assert.IsTrue(loginPage.MensagemDeErroVisivel(), "Mensagem de erro não foi exibida após o login inválido.");
         }
+
 
         [TearDown]
         public void TearDown()
         {
             driver.Quit();
+            driver.Dispose();
         }
     }
 }
