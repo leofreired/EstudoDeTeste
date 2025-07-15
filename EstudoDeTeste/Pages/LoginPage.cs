@@ -30,6 +30,11 @@ public class LoginPage
         var botaoLogin = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("button[type='submit']")));
         botaoLogin.Click();
     }
+    public void ClicarLogout()
+    {
+        var botaoLogout = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.CssSelector("i.icon-2x.icon-signout")));
+        botaoLogout.Click();
+    }
 
     public void RealizarLogin(string usuario, string senha)
     {
@@ -38,9 +43,15 @@ public class LoginPage
         ClicarLogin();
     }
 
+    public void RealizarLogout()
+    {
+        ClicarLogout();
+    }
+
     public bool MensagemDeSucessoVisivel()
     {
-        return driver.PageSource.Contains("You logged into a secure area!");
+        return driver.PageSource.Contains("You logged into a secure area!")
+            || driver.PageSource.Contains("You logged out of the secure area!");
     }
 
     public bool MensagemDeErroVisivel()
